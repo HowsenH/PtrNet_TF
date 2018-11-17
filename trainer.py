@@ -6,7 +6,7 @@ from tensorflow.contrib.framework.python.ops import arg_scope
 
 from model import Model
 from utils import show_all_variables
-from data_loader import TSPDataLoader
+from data_loader import TSPDataLoader, MyTSPDataLoader
 
 class Trainer(object):
   def __init__(self, config, rng):
@@ -23,7 +23,8 @@ class Trainer(object):
     self.checkpoint_secs = config.checkpoint_secs
 
     if config.task.lower().startswith('tsp'):
-      self.data_loader = TSPDataLoader(config, rng=self.rng)
+      # self.data_loader = TSPDataLoader(config, rng=self.rng)
+      self.data_loader = MyTSPDataLoader(config, rng=self.rng)
     else:
       raise Exception("[!] Unknown task: {}".format(config.task))
 
