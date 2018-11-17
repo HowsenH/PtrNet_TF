@@ -9,10 +9,10 @@ TensorFlow implementation of [Pointer Networks](https://arxiv.org/abs/1506.03134
 
 ## Requirements
 
-- Python 2.7
+- Python 3.5
 - [requests](http://python-requests.org/)
 - [tqdm](https://github.com/tqdm/tqdm)
-- [TensorFlow 0.12.1](https://github.com/tensorflow/tensorflow/tree/r0.12)
+- [TensorFlow 1.0.0](https://github.com/tensorflow/tensorflow/tree/r0.12)
 
 
 ## Usage

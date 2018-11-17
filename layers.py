@@ -12,20 +12,15 @@ except:
 smart_cond = utils.smart_cond
 
 try:
-  LSTMCell = rnn.LSTMCell
-  MultiRNNCell = rnn.MultiRNNCell
-  dynamic_rnn_decoder = seq2seq.dynamic_rnn_decoder
-  simple_decoder_fn_train = seq2seq.simple_decoder_fn_train
+  LSTMCell = tf.contrib.rnn.LSTMCell
+  MultiRNNCell = tf.contrib.rnn.MultiRNNCell
+  dynamic_rnn_decoder = tf.contrib.seq2seq.dynamic_rnn_decoder
+  simple_decoder_fn_train = tf.contrib.seq2seq.simple_decoder_fn_train
 except:
   LSTMCell = tf.contrib.rnn.LSTMCell
   MultiRNNCell = tf.contrib.rnn.MultiRNNCell
   dynamic_rnn_decoder = tf.contrib.seq2seq.dynamic_rnn_decoder
   simple_decoder_fn_train = tf.contrib.seq2seq.simple_decoder_fn_train
-
-try:
-  from tensorflow.python.ops.gen_array_ops import _concat_v2 as concat_v2
-except:
-  concat_v2 = tf.concat_v2
 
 def decoder_rnn(cell, inputs,
                 enc_outputs, enc_final_states,
@@ -112,7 +107,7 @@ def trainable_initial_state(batch_size, state_size,
   else:
     flat_initializer = tuple(tf.zeros_initializer for initializer in flat_state_size)
 
-  names = ["{}_{}".format(name, i) for i in xrange(len(flat_state_size))]
+  names = ["{}_{}".format(name, i) for i in range(len(flat_state_size))]
   tiled_states = []
 
   for name, size, init in zip(names, flat_state_size, flat_initializer):
