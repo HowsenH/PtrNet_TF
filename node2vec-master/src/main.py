@@ -14,6 +14,7 @@ import numpy as np
 import networkx as nx
 import node2vec
 from gensim.models import Word2Vec
+from tqdm import tqdm
 
 def parse_args():
 	'''
@@ -79,6 +80,14 @@ def read_graph():
 
 	return G
 
+def our_read_graph(distance_matrix, threshold):
+	# TODO: Find unconnected edges, if distance() > 5, and set weight to 0
+	# TODO: reverse the distance as weight 1/d
+	weight = 1/distance_matrix
+	weight[distance_matrix > threshold] = 0
+	G = nx.from_numpy_matrix(weight, create_using=nx.DiGraph())
+	return G
+
 def learn_embeddings(walks):
 	'''
 	Learn embeddings by optimizing the Skipgram objective using SGD.
@@ -93,12 +102,28 @@ def main(args):
 	'''
 	Pipeline for representational learning for all nodes in a graph.
 	'''
-	nx_G = read_graph()
-	G = node2vec.Graph(nx_G, args.directed, args.p, args.q)
-	G.preprocess_transition_probs()
-	walks = G.simulate_walks(args.num_walks, args.walk_length)
-	learn_embeddings(walks)
+	x = np.load('../../data/distance_matrix5-20/n=20_index1_x.npy')
+	num_graph, n, n = x.shape
+	embeded_dim = 32
+	embeded = np.zeros((num_graph, n, embeded_dim))
+	print(x.shape)
+	for i in tqdm(range(num_graph)):
+		nx_G = our_read_graph(x[i], 10)
+		# BFS style walk
+		G = node2vec.Graph(nx_G, is_directed=True, p=10, q=1)
+		G.preprocess_transition_probs()
+		walks = G.simulate_walks(num_walks=50, walk_length=20)
+		# Word2Vec to embed walks
+		walks = [map(str, walk) for walk in walks]
+		model = Word2Vec(walks, size=32, window=args.window_size, min_count=0, sg=1, workers=args.workers,
+						 iter=args.iter)
+		for vocab in model.vocab:
+			embeded[i, int(vocab),:] = model[vocab]
+		# print(embeded[i])
+		# print(y[i])
+	np.save('../../data/distance_matrix5-20/embedded_n=20_index1_x.npy', embeded)
 
 if __name__ == "__main__":
 	args = parse_args()
 	main(args)
+	# x = np.load('../../data/distance_matrix5-20/embedded_n=10_index1_x.npy')

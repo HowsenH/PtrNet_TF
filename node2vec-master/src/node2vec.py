@@ -43,9 +43,9 @@ class Graph():
 		G = self.G
 		walks = []
 		nodes = list(G.nodes())
-		print 'Walk iteration:'
+		# print 'Walk iteration:'
 		for walk_iter in range(num_walks):
-			print str(walk_iter+1), '/', str(num_walks)
+			# print str(walk_iter+1), '/', str(num_walks)
 			random.shuffle(nodes)
 			for node in nodes:
 				walks.append(self.node2vec_walk(walk_length=walk_length, start_node=node))
@@ -59,7 +59,6 @@ class Graph():
 		G = self.G
 		p = self.p
 		q = self.q
-
 		unnormalized_probs = []
 		for dst_nbr in sorted(G.neighbors(dst)):
 			if dst_nbr == src:
